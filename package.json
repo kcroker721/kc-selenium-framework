@@ -1,0 +1,25 @@
+{
+  "name": "kc-selenium-framework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha \"test/**/*.test.js\"",
+    "test:html": "mocha \"test/**/*.test.js\" --reporter mochawesome --reporter-options reportDir=reports,reportFilename=kc-report,quiet=true",
+    "test:junit": "mocha \"test/**/*.test.js\" --reporter mocha-junit-reporter --reporter-options mochaFile=reports/junit.xml"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "chai": "^6.2.1",
+    "dotenv": "^17.2.3",
+    "mocha": "^11.7.5",
+    "selenium-webdriver": "^4.39.0"
+  },
+  "devDependencies": {
+    "mocha-junit-reporter": "^2.2.1",
+    "mochawesome": "^7.1.4"
+  }
+}
