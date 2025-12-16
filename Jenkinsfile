@@ -28,7 +28,7 @@ pipeline {
 
     stage('Test') {
       steps {
-        sh 'mkdir -p reports'
+        sh 'mkdir -p reports reports/screenshots'
         sh 'npm run test:junit'
         sh 'npm run test:html'
       }

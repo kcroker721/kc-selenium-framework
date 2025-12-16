@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha \"test/**/*.test.js\"",
-    "test:html": "mocha \"test/**/*.test.js\" --reporter mochawesome --reporter-options reportDir=reports,reportFilename=kc-report,quiet=true",
+    "test:html": "mocha \"test/**/*.test.js\" --grep \"\\[AMAZON\\]\" --reporter mochawesome --reporter-options reportDir=reports,reportFilename=kc-report,quiet=true",
     "test:junit": "mocha \"test/**/*.test.js\" --grep \"\\[AMAZON\\]\" --reporter mocha-junit-reporter --reporter-options mochaFile=reports/junit.xml"
   },
   "keywords": [],
