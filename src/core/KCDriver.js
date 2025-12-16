@@ -48,15 +48,18 @@ class KCDriver {
     let builder = new Builder().forBrowser(env.browser);
 
     if (env.browser === "chrome") {
-        const chromeOptions = new chrome.Options();
+        const options = new chrome.Options();
 
-        if (isHeadless) {
-        chromeOptions.addArguments("--headless=new");
-        }
+        if (env.headless) options.addArguments("--headless=new");
+        options.addArguments("--window-size=1280,800");
 
-        chromeOptions.addArguments("--window-size=1280,800");
-        builder.setChromeOptions(chromeOptions);
+        // ✅ reduce Chrome noise
+        options.addArguments("--disable-logging");
+        options.excludeSwitches(["enable-logging"]);
+
+        builder.setChromeOptions(options);
     }
+
 
     if (env.browser === "firefox") {
         const firefoxOptions = new firefox.Options();
