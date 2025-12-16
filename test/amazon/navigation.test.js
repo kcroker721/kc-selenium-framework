@@ -31,7 +31,7 @@ describe('Amazon navigation smoke', function () {
 
     console.log("[TEST] Checking for cookie consent banner");
     try {
-      await kc.KCClick("id", "sp-cc-accept", { timeout: 5000 });
+      await kc.KCClick({ locator: 'id', value: 'sp-cc-accept', timeout: 5000 });
       console.log("[TEST] Cookie consent accepted");
     } catch {
       console.log("[TEST] No cookie consent banner found (continuing)");
@@ -59,14 +59,14 @@ describe('Amazon navigation smoke', function () {
       expect(pageTitle.toLowerCase()).to.include(EXPECTED_TITLE_KEYWORD);
 
       console.log(`[TEST] Step 2: Searching for "${SEARCH_TEXT}"`);
-      // Perform search
-      await kc.KCWait("id", "twotabsearchtextbox");
-      await kc.KCType("id", "twotabsearchtextbox", SEARCH_TEXT);
-      await kc.KCClick("id", "nav-search-submit-button");
+      // Perform search (using new named parameter syntax)
+      await kc.KCWait({ locator: 'id', value: 'twotabsearchtextbox' });
+      await kc.KCType({ locator: 'id', value: 'twotabsearchtextbox', text: SEARCH_TEXT });
+      await kc.KCClick({ locator: 'id', value: 'nav-search-submit-button' });
 
       console.log("[TEST] Step 3: Waiting for search results");
-      // Wait for results
-      await kc.KCWait("css", "div.s-main-slot", { timeout: 30000 });
+      // Wait for results (named parameters make timeout clear)
+      await kc.KCWait({ locator: 'css', value: 'div.s-main-slot', timeout: 30000 });
 
       console.log("[TEST] Step 4: Verifying search results exist");
       const results = await kc.driver.findElements(
@@ -84,8 +84,8 @@ describe('Amazon navigation smoke', function () {
       await firstResult.click();
 
       console.log("[TEST] Step 6: Capturing product title");
-      // Capture product title for assertions
-      await kc.KCWait("id", "productTitle", { timeout: 30000 });
+      // Capture product title for assertions (named parameters)
+      await kc.KCWait({ locator: 'id', value: 'productTitle', timeout: 30000 });
       const productTitleEl = await kc.KCFindVisible(By.id("productTitle"));
       actualProductTitle = (await productTitleEl.getText()).trim();
       console.log(`[TEST] Product title captured: "${actualProductTitle}"`);

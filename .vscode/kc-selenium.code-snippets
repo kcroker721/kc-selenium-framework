@@ -1,0 +1,200 @@
+{
+  "KCClick with named parameters": {
+    "prefix": "kcclick",
+    "body": [
+      "await kc.KCClick({ locator: '${1|id,css,xpath,button,span,a|}', value: '$2'$3 });"
+    ],
+    "description": "KCClick with named parameters (locator, value)"
+  },
+  
+  "KCClick old syntax": {
+    "prefix": "kcclickold",
+    "body": [
+      "await kc.KCClick('${1|id,css,xpath,button,span,a|}', '$2'$3);"
+    ],
+    "description": "KCClick with positional parameters (old syntax)"
+  },
+
+  "KCType with named parameters": {
+    "prefix": "kctype",
+    "body": [
+      "await kc.KCType({ locator: '${1|id,css,xpath,name|}', value: '$2', text: '$3'$4 });"
+    ],
+    "description": "KCType with named parameters (locator, value, text)"
+  },
+
+  "KCType old syntax": {
+    "prefix": "kctypeold",
+    "body": [
+      "await kc.KCType('${1|id,css,xpath,name|}', '$2', '$3'$4);"
+    ],
+    "description": "KCType with positional parameters (old syntax)"
+  },
+
+  "KCWait with named parameters": {
+    "prefix": "kcwait",
+    "body": [
+      "await kc.KCWait({ locator: '${1|id,css,xpath,button,span,h1|}', value: '$2'$3 });"
+    ],
+    "description": "KCWait with named parameters (locator, value)"
+  },
+
+  "KCWait old syntax": {
+    "prefix": "kcwaitold",
+    "body": [
+      "await kc.KCWait('${1|id,css,xpath,button,span,h1|}', '$2'$3);"
+    ],
+    "description": "KCWait with positional parameters (old syntax)"
+  },
+
+  "KCWait for element to disappear": {
+    "prefix": "kcwaitdisappear",
+    "body": [
+      "await kc.KCWait({ locator: '${1|css,id,xpath|}', value: '$2', waitUntilType: 'Disappeared'$3 });"
+    ],
+    "description": "KCWait for element to disappear (e.g., spinner)"
+  },
+
+  "KCGoTo": {
+    "prefix": "kcgoto",
+    "body": [
+      "await kc.KCGoTo('$1');"
+    ],
+    "description": "Navigate to a URL"
+  },
+
+  "KCDriver build": {
+    "prefix": "kcbuild",
+    "body": [
+      "const kc = await KCDriver.build($1);"
+    ],
+    "description": "Build a new KCDriver instance"
+  },
+
+  "KCDriver build headed": {
+    "prefix": "kcbuildheaded",
+    "body": [
+      "const kc = await KCDriver.build({ headed: true });"
+    ],
+    "description": "Build KCDriver in headed mode (visible browser)"
+  },
+
+  "KCQuit": {
+    "prefix": "kcquit",
+    "body": [
+      "await kc.KCQuit();"
+    ],
+    "description": "Close the browser session"
+  },
+
+  "Mocha test describe block": {
+    "prefix": "kcdescribe",
+    "body": [
+      "describe('$1', function () {",
+      "  this.timeout(${2:40000});",
+      "",
+      "  let kc;",
+      "",
+      "  before(async () => {",
+      "    kc = await KCDriver.build();",
+      "  });",
+      "",
+      "  after(async () => {",
+      "    await kc.KCQuit();",
+      "  });",
+      "",
+      "  it('$3', async () => {",
+      "    $0",
+      "  });",
+      "});"
+    ],
+    "description": "Complete Mocha describe block with KCDriver setup"
+  },
+
+  "Mocha it block": {
+    "prefix": "kcit",
+    "body": [
+      "it('$1', async () => {",
+      "  $0",
+      "});"
+    ],
+    "description": "Mocha it test block"
+  },
+
+  "KCClick with timeout": {
+    "prefix": "kcclicktimeout",
+    "body": [
+      "await kc.KCClick({ locator: '${1|id,css,xpath|}', value: '$2', timeout: ${3:5000} });"
+    ],
+    "description": "KCClick with custom timeout"
+  },
+
+  "KCType with timeout": {
+    "prefix": "kctypetimeout",
+    "body": [
+      "await kc.KCType({ locator: '${1|id,css,xpath|}', value: '$2', text: '$3', timeout: ${4:5000} });"
+    ],
+    "description": "KCType with custom timeout"
+  },
+
+  "KCFindVisible": {
+    "prefix": "kcfindvisible",
+    "body": [
+      "const element = await kc.KCFindVisible(By.${1|id,css,xpath|}('$2'));"
+    ],
+    "description": "Find and wait for visible element"
+  },
+
+  "KCWaitClickable": {
+    "prefix": "kcwaitclickable",
+    "body": [
+      "const element = await kc.KCWaitClickable(By.${1|id,css,xpath|}('$2'));"
+    ],
+    "description": "Wait for element to be clickable"
+  },
+
+  "Chai expect assertion": {
+    "prefix": "kcexpect",
+    "body": [
+      "expect($1).to.${2|equal,include,be.greaterThan,be.lessThan|}($3);"
+    ],
+    "description": "Chai expect assertion"
+  },
+
+  "Get element text": {
+    "prefix": "kcgettext",
+    "body": [
+      "const ${1:text} = await ${2:element}.getText();"
+    ],
+    "description": "Get text from an element"
+  },
+
+  "Take screenshot": {
+    "prefix": "kcscreenshot",
+    "body": [
+      "const screenshot = await kc.driver.takeScreenshot();",
+      "fs.writeFileSync('reports/screenshots/${1:filename}.png', screenshot, 'base64');"
+    ],
+    "description": "Take and save a screenshot"
+  },
+
+  "Console log test step": {
+    "prefix": "kclog",
+    "body": [
+      "console.log('[TEST] $1');"
+    ],
+    "description": "Log a test step to console"
+  },
+
+  "Try-catch for optional element": {
+    "prefix": "kctry",
+    "body": [
+      "try {",
+      "  await kc.KCClick({ locator: '${1|id,css,xpath|}', value: '$2', timeout: ${3:5000} });",
+      "} catch {",
+      "  console.log('[TEST] $4 not found (continuing)');",
+      "}"
+    ],
+    "description": "Try-catch block for optional elements (e.g., cookie banners)"
+  }
+}

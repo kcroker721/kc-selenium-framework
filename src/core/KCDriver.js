@@ -263,6 +263,16 @@ class KCDriver {
    * - Stale: element was found, then detached from DOM (good for re-rendering)
    */
   async KCWait(locatorType, locatorValue, options = {}) {
+    // Support named parameters (new syntax)
+    if (typeof locatorType === 'object' && locatorType !== null) {
+      const params = locatorType;
+      locatorType = params.locator;
+      locatorValue = params.value;
+      options = { ...params }; // Spread remaining options
+      delete options.locator;
+      delete options.value;
+    }
+
     const timeout = options.timeout ?? this.defaultTimeout;
 
     // Allow the alias you asked for:
@@ -318,19 +328,36 @@ class KCDriver {
 
   /**
    * KCType(locatorType, locatorValue, text, options?)
+   * KCType({ locator, value, text, ...options })
    *
    * When to use:
    * - Entering text into inputs/fields (username/password/search bars)
    *
-   * Examples:
+   * Examples (Old Syntax - still works):
    *   await kc.KCType("css", "#username", "tomsmith");
    *   await kc.KCType("id", "password", "SuperSecretPassword!");
+   *
+   * Examples (New Syntax - named parameters):
+   *   await kc.KCType({ locator: 'id', value: 'username', text: 'tomsmith' });
+   *   await kc.KCType({ locator: 'css', value: '#password', text: 'secret123' });
    *
    * Options:
    *  - timeout: number (ms)
    *  - contains: boolean (only relevant if using tag+text mode, not typical for typing)
    */
   async KCType(locatorType, locatorValue, text, options = {}) {
+    // Support named parameters (new syntax)
+    if (typeof locatorType === 'object' && locatorType !== null) {
+      const params = locatorType;
+      locatorType = params.locator;
+      locatorValue = params.value;
+      text = params.text;
+      options = { ...params }; // Spread remaining options
+      delete options.locator;
+      delete options.value;
+      delete options.text;
+    }
+
     this.KCLog(`Typing into element: ${locatorType}="${locatorValue}"`);
     const timeout = options.timeout ?? this.defaultTimeout;
     const locator = this.KCBuildLocator(locatorType, locatorValue, options);
@@ -342,6 +369,7 @@ class KCDriver {
 
   /**
    * KCClick(locatorType, locatorValue, options?)
+   * KCClick({ locator, value, ...options })
    *
    * Supports:
    * - tag + visible text:
@@ -355,6 +383,11 @@ class KCDriver {
    *     await kc.KCClick("id", "loginBtn");
    *     await kc.KCClick("xpath", "//div[@role='button']");
    *
+   * Examples (New Syntax - named parameters):
+   *   await kc.KCClick({ locator: 'id', value: 'loginBtn' });
+   *   await kc.KCClick({ locator: 'button', value: 'Login' });
+   *   await kc.KCClick({ locator: 'css', value: '#submit', timeout: 5000 });
+   *
    * Options:
    *  - timeout: number (ms)
    *  - contains: boolean (tag+text mode only; use if text is partial or dynamic)
@@ -364,6 +397,16 @@ class KCDriver {
    * - Keeps your tests readable and hides XPath/CSS complexity
    */
   async KCClick(locatorType, locatorValue, options = {}) {
+    // Support named parameters (new syntax)
+    if (typeof locatorType === 'object' && locatorType !== null) {
+      const params = locatorType;
+      locatorType = params.locator;
+      locatorValue = params.value;
+      options = { ...params }; // Spread remaining options
+      delete options.locator;
+      delete options.value;
+    }
+
     this.KCLog(`Clicking element: ${locatorType}="${locatorValue}"`);
     const timeout = options.timeout ?? this.defaultTimeout;
     const locator = this.KCBuildLocator(locatorType, locatorValue, options);
