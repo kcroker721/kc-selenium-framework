@@ -13,6 +13,7 @@ pipeline {
 
   environment {
     // Force CI to be headless regardless of local .env
+    PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     HEADLESS = 'true'
     BROWSER = 'chrome'
   }
@@ -26,9 +27,11 @@ pipeline {
 
     stage('Install') {
       steps {
-        sh '/opt/homebrew/bin/node -v'
-        sh '/opt/homebrew/bin/npm -v'
-        sh '/opt/homebrew/bin/npm ci'
+        sh 'node -v'
+        sh 'npm -v'
+        sh 'npm ci'
+        sh 'npm run test:ci'
+        sh 'npm run test:html'
       }
     }
 
