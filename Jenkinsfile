@@ -46,15 +46,30 @@ pipeline {
     stage('Test') {
       steps {
         echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-        echo '🧪 RUNNING TESTS'
+        echo '🧪 RUNNING TESTS IN PARALLEL'
         echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
         sh 'mkdir -p reports reports/screenshots'
         
-        echo '📊 Running Amazon tests (JUnit)...'
-        sh 'npm run test:amazon:junit'
+        script {
+          parallel(
+            'Amazon Tests': {
+              echo '� Running Amazon tests...'
+              sh 'npm run test:amazon:junit'
+              sh 'npm run test:amazon:html'
+              echo '✅ Amazon tests complete'
+            },
+            'Smoke Tests': {
+              echo '� Running Smoke tests...'
+              sh 'npm run test:smoke:junit'
+              sh 'npm run test:smoke:html'
+              echo '✅ Smoke tests complete'
+            }
+          )
+        }
         
-        echo '📈 Running Amazon tests (HTML)...'
-        sh 'npm run test:amazon:html'
+        echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+        echo '✅ ALL PARALLEL TESTS COMPLETE'
+        echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
       }
     }
   }
