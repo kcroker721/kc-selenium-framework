@@ -2,20 +2,8 @@ pipeline {
   agent any
 
   options {
-    timestamps()        script {
-          parallel(
-            'Amazon Tests': {
-              echo '🛒 Running Amazon tests (JUnit + HTML)...'
-              sh 'npm run test:amazon:report'
-              echo '✅ Amazon tests complete'
-            },
-            'Smoke Tests': {
-              echo '🔥 Running Smoke tests (JUnit + HTML)...'
-              sh 'npm run test:smoke:report'
-              echo '✅ Smoke tests complete'
-            }
-          )
-        }xterm')
+    timestamps()
+    ansiColor('xterm')
     buildDiscarder(logRotator(numToKeepStr: '10'))
     quietPeriod(0)
     skipDefaultCheckout(false)
@@ -65,15 +53,13 @@ pipeline {
         script {
           parallel(
             'Amazon Tests': {
-              echo '� Running Amazon tests...'
-              sh 'npm run test:amazon:junit'
-              sh 'npm run test:amazon:html'
+              echo '� Running Amazon tests (JUnit + HTML)...'
+              sh 'npm run test:amazon:report'
               echo '✅ Amazon tests complete'
             },
             'Smoke Tests': {
-              echo '� Running Smoke tests...'
-              sh 'npm run test:smoke:junit'
-              sh 'npm run test:smoke:html'
+              echo '� Running Smoke tests (JUnit + HTML)...'
+              sh 'npm run test:smoke:report'
               echo '✅ Smoke tests complete'
             }
           )
