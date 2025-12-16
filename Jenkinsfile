@@ -30,7 +30,8 @@ pipeline {
         sh 'node -v'
         sh 'npm -v'
         sh 'npm ci'
-        sh 'npm run test:ci'
+        sh 'mkdir -p reports'
+        sh 'npm run test:junit'
         sh 'npm run test:html'
       }
     }
@@ -42,7 +43,7 @@ pipeline {
       }
       post {
         always {
-          junit 'reports/junit/results.xml'
+          junit 'reports/junit.xml'
         }
       }
     }
