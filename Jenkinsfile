@@ -16,6 +16,9 @@ pipeline {
     PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
     HEADLESS = 'true'
     BROWSER  = 'chrome'
+    BASE_URL = 'https://the-internet.herokuapp.com'
+    USERNAME = 'tomsmith'
+    PASSWORD = 'SuperSecretPassword!'
   }
 
   stages {
