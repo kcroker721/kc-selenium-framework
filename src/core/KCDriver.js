@@ -16,6 +16,24 @@ class KCDriver {
   constructor(driver) {
     this.driver = driver;
     this.defaultTimeout = 10000; // default wait timeout in ms
+    this.enableLogging = process.env.KC_LOGGING !== "false"; // Enable by default
+  }
+
+  /**
+   * KCLog(message, data?)
+   * Internal logging method that adds timestamps and context
+   */
+  KCLog(message, data = null) {
+    if (!this.enableLogging) return;
+    
+    const timestamp = new Date().toISOString();
+    const logMessage = `[KC ${timestamp}] ${message}`;
+    
+    if (data) {
+      console.log(logMessage, data);
+    } else {
+      console.log(logMessage);
+    }
   }
 
   // ---------- BUILD / TEARDOWN ----------
@@ -32,6 +50,9 @@ class KCDriver {
    *   beforeEach(async () => { kc = await KCDriver.build(); });
    */
     static async build(options = {}) {
+    console.log(`[KC] Building browser session...`);
+    console.log(`[KC] Browser: ${env.browser}, Headless: ${env.headless}`);
+    
     // Allow "headed: true" as a friendly alias
     if (options.headed === true) {
         options.headless = false;
@@ -73,6 +94,7 @@ class KCDriver {
 
     const driver = await builder.build();
     await driver.manage().window().maximize();
+    console.log(`[KC] Browser session started successfully`);
     return new KCDriver(driver);
     }
 
@@ -104,7 +126,9 @@ class KCDriver {
    *   await kc.KCGoTo("https://example.com/login");
    */
   async KCGoTo(url) {
+    this.KCLog(`Navigating to: ${url}`);
     await this.driver.get(url);
+    this.KCLog(`Successfully navigated to: ${url}`);
   }
 
   // ---------- INTERNAL HELPERS (LOCATORS + WAITS) ----------
@@ -248,14 +272,18 @@ class KCDriver {
         ? "Stale"
         : options.waitUntilType ?? "Appeared";
 
+    this.KCLog(`Waiting for element ${waitUntilType}: ${locatorType}="${locatorValue}" (timeout: ${timeout}ms)`);
+    
     const locator = this.KCBuildLocator(locatorType, locatorValue, options);
 
-    if (waitUntilType === "Appeared") {
-      await this.KCFindVisible(locator, timeout);
-      return;
-    }
+    try {
+      if (waitUntilType === "Appeared") {
+        await this.KCFindVisible(locator, timeout);
+        this.KCLog(`Element appeared: ${locatorType}="${locatorValue}"`);
+        return;
+      }
 
-    if (waitUntilType === "Disappeared") {
+      if (waitUntilType === "Disappeared") {
       await this.driver.wait(async () => {
         const els = await this.driver.findElements(locator);
         if (els.length === 0) return true;
@@ -271,14 +299,19 @@ class KCDriver {
       return;
     }
 
-    if (waitUntilType === "Stale") {
-      // Find element first, then wait until it becomes stale (detached)
-      const el = await this.KCFindPresent(locator, timeout);
-      await this.driver.wait(until.stalenessOf(el), timeout);
-      return;
-    }
+      if (waitUntilType === "Stale") {
+        // Find element first, then wait until it becomes stale (detached)
+        const el = await this.KCFindPresent(locator, timeout);
+        await this.driver.wait(until.stalenessOf(el), timeout);
+        this.KCLog(`Element became stale: ${locatorType}="${locatorValue}"`);
+        return;
+      }
 
-    throw new Error(`KCWait: Unknown waitUntilType "${waitUntilType}"`);
+      throw new Error(`KCWait: Unknown waitUntilType "${waitUntilType}"`);
+    } catch (error) {
+      this.KCLog(`ERROR: Wait failed for ${locatorType}="${locatorValue}" (${waitUntilType}, timeout: ${timeout}ms)`);
+      throw new Error(`KCWait failed for ${locatorType}="${locatorValue}" (${waitUntilType}): ${error.message}`);
+    }
   }
 
   // ---------- ACTIONS ----------
@@ -298,11 +331,13 @@ class KCDriver {
    *  - contains: boolean (only relevant if using tag+text mode, not typical for typing)
    */
   async KCType(locatorType, locatorValue, text, options = {}) {
+    this.KCLog(`Typing into element: ${locatorType}="${locatorValue}"`);
     const timeout = options.timeout ?? this.defaultTimeout;
     const locator = this.KCBuildLocator(locatorType, locatorValue, options);
     const el = await this.KCFindVisible(locator, timeout);
     await el.clear();
     await el.sendKeys(text);
+    this.KCLog(`Successfully typed into: ${locatorType}="${locatorValue}"`);
   }
 
   /**
@@ -329,10 +364,12 @@ class KCDriver {
    * - Keeps your tests readable and hides XPath/CSS complexity
    */
   async KCClick(locatorType, locatorValue, options = {}) {
+    this.KCLog(`Clicking element: ${locatorType}="${locatorValue}"`);
     const timeout = options.timeout ?? this.defaultTimeout;
     const locator = this.KCBuildLocator(locatorType, locatorValue, options);
     const el = await this.KCWaitClickable(locator, timeout);
     await el.click();
+    this.KCLog(`Successfully clicked: ${locatorType}="${locatorValue}"`);
   }
 }
 
