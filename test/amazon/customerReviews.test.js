@@ -26,6 +26,9 @@ describe('Amazon - Customer Reviews', function () {
       // ignore
     }
 
+    // Wait for search box to be ready
+    await kc.KCWait({ locator: 'id', value: 'twotabsearchtextbox', timeout: 10000 });
+
     // Search for product
     await kc.KCType({ 
       locator: 'id', 
@@ -35,10 +38,14 @@ describe('Amazon - Customer Reviews', function () {
     
     await kc.KCClick({ locator: 'id', value: 'nav-search-submit-button' });
     
+    // Wait for results to load
+    await kc.driver.sleep(3000);
+
+    // Wait for product links to appear
     await kc.KCWait({ 
       locator: 'css', 
-      value: 'div.s-main-slot', 
-      timeout: 30000 
+      value: 'div[data-component-type="s-search-result"] h2 a', 
+      timeout: 15000 
     });
 
     // Open first product
@@ -52,6 +59,9 @@ describe('Amazon - Customer Reviews', function () {
       value: 'productTitle', 
       timeout: 30000 
     });
+    
+    // Give product page time to fully load
+    await kc.driver.sleep(2000);
   });
 
   after(async () => {

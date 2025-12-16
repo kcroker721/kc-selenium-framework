@@ -34,6 +34,9 @@ describe('Amazon - Add to Cart Workflow', function () {
   it('should search for a product', async () => {
     console.log(`[TEST] Searching for "${SEARCH_TERM}"`);
     
+    // Wait for search box to be ready
+    await kc.KCWait({ locator: 'id', value: 'twotabsearchtextbox', timeout: 10000 });
+    
     await kc.KCType({ 
       locator: 'id', 
       value: 'twotabsearchtextbox', 
@@ -42,11 +45,8 @@ describe('Amazon - Add to Cart Workflow', function () {
     
     await kc.KCClick({ locator: 'id', value: 'nav-search-submit-button' });
     
-    await kc.KCWait({ 
-      locator: 'css', 
-      value: 'div.s-main-slot', 
-      timeout: 30000 
-    });
+    // Wait for results to load
+    await kc.driver.sleep(3000);
     
     const results = await kc.driver.findElements(By.css('div[data-component-type="s-search-result"]'));
     console.log(`[TEST] Found ${results.length} search results`);
@@ -56,6 +56,13 @@ describe('Amazon - Add to Cart Workflow', function () {
 
   it('should open product detail page', async () => {
     console.log("[TEST] Opening first product");
+    
+    // Wait for search results to be fully loaded
+    await kc.KCWait({ 
+      locator: 'css', 
+      value: 'div[data-component-type="s-search-result"] h2 a',
+      timeout: 15000
+    });
     
     const firstProduct = await kc.KCFindVisible(
       By.css('div[data-component-type="s-search-result"] h2 a')

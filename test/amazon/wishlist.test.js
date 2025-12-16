@@ -24,6 +24,9 @@ describe('Amazon - Wishlist / Save for Later', function () {
     } catch {
       // ignore
     }
+    
+    // Wait for page to be fully loaded
+    await kc.KCWait({ locator: 'id', value: 'nav-logo-sprites', timeout: 10000 });
   });
 
   after(async () => {
@@ -33,6 +36,9 @@ describe('Amazon - Wishlist / Save for Later', function () {
   it('should navigate to a product page', async () => {
     console.log("[TEST] Searching for a product");
     
+    // Wait for search box to be ready
+    await kc.KCWait({ locator: 'id', value: 'twotabsearchtextbox', timeout: 10000 });
+    
     await kc.KCType({ 
       locator: 'id', 
       value: 'twotabsearchtextbox', 
@@ -41,10 +47,14 @@ describe('Amazon - Wishlist / Save for Later', function () {
     
     await kc.KCClick({ locator: 'id', value: 'nav-search-submit-button' });
     
+    // Wait for results to load
+    await kc.driver.sleep(3000);
+    
+    // Wait for product links
     await kc.KCWait({ 
       locator: 'css', 
-      value: 'div.s-main-slot', 
-      timeout: 30000 
+      value: 'div[data-component-type="s-search-result"] h2 a', 
+      timeout: 15000 
     });
     
     const firstProduct = await kc.KCFindVisible(
@@ -58,6 +68,9 @@ describe('Amazon - Wishlist / Save for Later', function () {
       value: 'productTitle', 
       timeout: 30000 
     });
+    
+    // Give page time to fully load
+    await kc.driver.sleep(2000);
     
     const title = await kc.driver.findElement(By.id('productTitle')).getText();
     console.log(`[TEST] On product page: ${title.substring(0, 50)}...`);
