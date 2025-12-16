@@ -26,9 +26,9 @@ pipeline {
 
     stage('Install') {
       steps {
-        sh 'node -v'
-        sh 'npm -v'
-        sh 'npm ci'
+        sh '/opt/homebrew/bin/node -v'
+        sh '/opt/homebrew/bin/npm -v'
+        sh '/opt/homebrew/bin/npm ci'
       }
     }
 
