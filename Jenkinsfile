@@ -50,11 +50,11 @@ pipeline {
         echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
         sh 'mkdir -p reports reports/screenshots'
         
-        echo '📊 Generating JUnit report...'
-        sh 'npm run test:junit'
+        echo '📊 Running Amazon tests (JUnit)...'
+        sh 'npm run test:amazon:junit'
         
-        echo '📈 Generating HTML report...'
-        sh 'npm run test:html'
+        echo '📈 Running Amazon tests (HTML)...'
+        sh 'npm run test:amazon:html'
       }
     }
   }

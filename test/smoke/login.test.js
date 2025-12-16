@@ -6,7 +6,7 @@ const addContext = require("mochawesome/addContext");
 const fs = require("fs");
 
 
-describe('[SMOKE] KC Framework - Smoke Test', function () {
+describe('KC Framework - Login Test', function () {
   this.timeout(40000);
 
   let kc;

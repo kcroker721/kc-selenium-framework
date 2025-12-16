@@ -5,8 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha \"test/**/*.test.js\"",
-    "test:junit": "mocha \"test/**/*.test.js\" --grep \"\\[AMAZON\\]\" --reporter mocha-junit-reporter --reporter-options mochaFile=reports/junit.xml,quiet=true 2>&1 | grep -v 'deprecation\\|npm WARN'",
-    "test:html": "mocha \"test/**/*.test.js\" --grep \"\\[AMAZON\\]\" --reporter mochawesome --reporter-options reportDir=reports,reportFilename=kc-report,quiet=true"
+    "test:amazon": "mocha \"test/amazon/**/*.test.js\"",
+    "test:smoke": "mocha \"test/smoke/**/*.test.js\"",
+    "test:amazon:junit": "mocha \"test/amazon/**/*.test.js\" --reporter mocha-junit-reporter --reporter-options mochaFile=reports/junit.xml,quiet=true",
+    "test:amazon:html": "mocha \"test/amazon/**/*.test.js\" --reporter mochawesome --reporter-options reportDir=reports,reportFilename=amazon-report,quiet=true",
+    "test:smoke:junit": "mocha \"test/smoke/**/*.test.js\" --reporter mocha-junit-reporter --reporter-options mochaFile=reports/junit.xml,quiet=true",
+    "test:smoke:html": "mocha \"test/smoke/**/*.test.js\" --reporter mochawesome --reporter-options reportDir=reports,reportFilename=smoke-report,quiet=true"
   },
   "keywords": [],
   "author": "",
