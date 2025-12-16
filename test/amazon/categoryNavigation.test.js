@@ -72,13 +72,14 @@ describe('Amazon - Category Navigation', function () {
     const currentUrl = await kc.driver.getCurrentUrl();
     console.log(`[TEST] Current URL: ${currentUrl}`);
     
-    // URL should contain reference to electronics
-    expect(currentUrl).to.satisfy((url) => 
-      url.includes('electronics') || url.includes('nav_em')
-    );
+    // URL should contain reference to electronics or navigation
+    const hasElectronics = currentUrl.includes('electronics') || currentUrl.includes('nav_em');
+    console.log(`[TEST] Electronics reference found: ${hasElectronics}`);
+    
+    expect(hasElectronics).to.be.true;
   });
 
-  it('should have breadcrumb navigation', async () {
+  it('should have breadcrumb navigation', async () => {
     // Navigate to a category first
     await kc.KCGoTo(AMAZON_URL);
     
@@ -95,6 +96,9 @@ describe('Amazon - Category Navigation', function () {
     const pageTitle = await kc.driver.getTitle();
     console.log(`[TEST] Page title: ${pageTitle}`);
     
-    expect(pageTitle.toLowerCase()).to.include('books');
+    const hasBooks = pageTitle.toLowerCase().includes('books');
+    console.log(`[TEST] Books reference found: ${hasBooks}`);
+    
+    expect(hasBooks).to.be.true;
   });
 });
