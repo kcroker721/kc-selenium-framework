@@ -6,7 +6,7 @@ Your KC Selenium Framework now includes **5 comprehensive retail test suites** c
 
 ```
 test/
-├── amazon/          (7 test files - 20+ tests)
+├── amazon/          (10 test files - 52+ tests)
 ├── smoke/           (1 test file - smoke tests)
 ├── target/          (2 test files)
 ├── walmart/         (2 test files)
@@ -16,7 +16,7 @@ test/
 
 ---
 
-## 🛒 Amazon Tests (7 Files)
+## 🛒 Amazon Tests (10 Files)
 
 ### 1. **navigation.test.js** - E-commerce Navigation
 - Searches for products
@@ -60,6 +60,35 @@ test/
 - ✅ Cart icon present
 - ✅ Product recommendations displayed
 - ✅ Footer present
+
+### 8. **addToCart.test.js** - Shopping Cart Workflow
+- 🛒 Searches for product
+- 🛒 Opens product detail page
+- 🛒 Validates add to cart button exists
+- 🛒 Adds product to cart
+- 🛒 Verifies cart count updated
+- 🛒 Navigates to cart page
+- 🛒 Validates cart page structure
+
+### 9. **customerReviews.test.js** - Reviews & Ratings
+- ⭐ Displays star rating
+- ⭐ Shows review count
+- ⭐ Customer review section present
+- ⭐ Individual reviews displayed
+- ⭐ Star rating breakdown (5-4-3-2-1 stars)
+- ⭐ Review text content visible
+- ⭐ Helpful vote counts
+- ⭐ "See all reviews" link present
+
+### 10. **wishlist.test.js** - Wishlist & Save for Later
+- 💙 Navigates to product page
+- 💙 Wishlist/Add to list button present
+- 💙 Lists navigation available
+- 💙 Gift list options
+- 💙 Add to list dropdown functionality
+- 💙 Navigates to cart
+- 💙 "Save for Later" option in cart
+- 💙 "Saved for Later" section structure
 
 ---
 
