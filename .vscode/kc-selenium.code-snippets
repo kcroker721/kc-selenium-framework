@@ -1,4 +1,45 @@
 {
+  "KC Test Template - Full File": {
+    "prefix": "kctemplate",
+    "body": [
+      "const { expect } = require(\"chai\");",
+      "const { By } = require(\"selenium-webdriver\");",
+      "const KCDriver = require(\"${1:../src/core/KCDriver}\");",
+      "",
+      "/**",
+      " * ============================",
+      " * TEST DATA / CONSTANTS",
+      " * ============================",
+      " */",
+      "const TEST_URL = \"${2:https://example.com}\";",
+      "",
+      "describe('${3:Your Test Suite Name}', function () {",
+      "  this.timeout(${4:40000});",
+      "",
+      "  let kc;",
+      "",
+      "  before(async () => {",
+      "    console.log(\"[TEST] Starting test setup\");",
+      "    kc = await KCDriver.build({ headed: ${5|false,true|} });",
+      "    await kc.KCGoTo(TEST_URL);",
+      "    console.log(\"[TEST] Setup complete\");",
+      "  });",
+      "",
+      "  after(async () => {",
+      "    console.log(\"[TEST] Cleaning up and closing browser\");",
+      "    await kc.KCQuit();",
+      "  });",
+      "",
+      "  describe('${6:Test Group 1}', () => {",
+      "    it('${7:should do something}', async () => {",
+      "      $0",
+      "    });",
+      "  });",
+      "});"
+    ],
+    "description": "Complete KC test file template with setup/teardown"
+  },
+
   "KCClick with named parameters": {
     "prefix": "kcclick",
     "body": [
