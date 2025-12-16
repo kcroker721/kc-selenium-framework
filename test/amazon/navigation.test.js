@@ -25,7 +25,7 @@ describe('Amazon navigation smoke', function () {
    */
   before(async () => {
     console.log("[TEST] Starting Amazon navigation test setup");
-    kc = await KCDriver.build({ headed: true });
+    kc = await KCDriver.build({ headed: false });
     console.log("[TEST] Navigating to Amazon homepage");
     await kc.KCGoTo(AMAZON_URL);
 

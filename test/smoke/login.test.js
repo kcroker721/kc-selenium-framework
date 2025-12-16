@@ -12,7 +12,7 @@ describe('KC Framework - Login Test', function () {
   let kc;
 
   before(async () => {
-    kc = await KCDriver.build();
+    kc = await KCDriver.build({ headed: false });
   });
 
   after(async function () {
