@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 
 module.exports = {
   baseUrl: process.env.BASE_URL,
