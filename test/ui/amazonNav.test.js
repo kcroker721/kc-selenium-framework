@@ -12,7 +12,7 @@ const SEARCH_TEXT = "wireless mouse";
 const EXPECTED_TITLE_KEYWORD = "amazon";
 const EXPECTED_PRODUCT_KEYWORD = "mouse";
 
-describe("Amazon navigation smoke (KCDriver)", function () {
+describe('[AMAZON] Amazon navigation smoke', function () {
   this.timeout(90000);
 
   let kc;

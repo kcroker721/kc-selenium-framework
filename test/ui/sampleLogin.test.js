@@ -6,16 +6,16 @@ const addContext = require("mochawesome/addContext");
 const fs = require("fs");
 
 
-describe("KC Framework - Smoke Test", function () {
+describe('[SMOKE] KC Framework - Smoke Test', function () {
   this.timeout(40000);
 
   let kc;
 
-  beforeEach(async () => {
+  before(async () => {
     kc = await KCDriver.build();
   });
 
-  afterEach(async function () {
+  after(async function () {
   if (this.currentTest.state === "failed") {
     const safeTitle = this.currentTest.title.replace(/[^\w\d-]+/g, "_");
     const fileName = `${safeTitle}.png`;
