@@ -1,7 +1,13 @@
 pipeline {
   agent any
 
-  options { timestamps() }
+  options {
+    timestamps()
+    ansiColor('xterm')
+    buildDiscarder(logRotator(numToKeepStr: '10'))
+    quietPeriod(0)
+    skipDefaultCheckout(false)
+  }
 
   triggers {
     cron('H 0 * * *')
@@ -15,21 +21,39 @@ pipeline {
 
   stages {
     stage('Checkout') {
-      steps { checkout scm }
+      steps {
+        echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+        echo '📦 CHECKING OUT CODE'
+        echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+        checkout scm
+      }
     }
 
     stage('Install') {
       steps {
-        sh 'node -v'
-        sh 'npm -v'
-        sh 'npm ci'
+        echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+        echo '🔧 INSTALLING DEPENDENCIES'
+        echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+        script {
+          sh 'echo "Node: $(node -v)"'
+          sh 'echo "NPM: $(npm -v)"'
+        }
+        sh 'npm ci --quiet'
+        echo '✅ Dependencies installed successfully'
       }
     }
 
     stage('Test') {
       steps {
+        echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+        echo '🧪 RUNNING TESTS'
+        echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
         sh 'mkdir -p reports reports/screenshots'
+        
+        echo '📊 Generating JUnit report...'
         sh 'npm run test:junit'
+        
+        echo '📈 Generating HTML report...'
         sh 'npm run test:html'
       }
     }
@@ -37,8 +61,31 @@ pipeline {
 
   post {
     always {
+      echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+      echo '📋 PUBLISHING RESULTS'
+      echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+      
       junit allowEmptyResults: true, testResults: 'reports/junit.xml'
       archiveArtifacts artifacts: 'reports/**/*', allowEmptyArchive: true
+      
+      script {
+        def testResults = junit(allowEmptyResults: true, testResults: 'reports/junit.xml')
+        if (testResults?.totalCount > 0) {
+          echo "✅ Tests: ${testResults.totalCount} | ✔️ Passed: ${testResults.passCount} | ❌ Failed: ${testResults.failCount}"
+        }
+      }
+    }
+    
+    success {
+      echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+      echo '✅ BUILD SUCCESSFUL'
+      echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+    }
+    
+    failure {
+      echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+      echo '❌ BUILD FAILED'
+      echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
     }
   }
 }

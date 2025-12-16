@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha \"test/**/*.test.js\"",
-    "test:junit": "mocha \"test/**/*.test.js\" --grep \"\\[AMAZON\\]\" --reporter mocha-junit-reporter --reporter-options mochaFile=reports/junit.xml,quiet=true",
+    "test:junit": "mocha \"test/**/*.test.js\" --grep \"\\[AMAZON\\]\" --reporter mocha-junit-reporter --reporter-options mochaFile=reports/junit.xml,quiet=true 2>&1 | grep -v 'deprecation\\|npm WARN'",
     "test:html": "mocha \"test/**/*.test.js\" --grep \"\\[AMAZON\\]\" --reporter mochawesome --reporter-options reportDir=reports,reportFilename=kc-report,quiet=true"
   },
   "keywords": [],
