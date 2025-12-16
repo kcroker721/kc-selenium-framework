@@ -3,7 +3,40 @@ pipeline {
 
   options {
     timestamps()
-    buildDiscarder(logRotator(numToKeepStr: '10'))
+         script {
+          parallel(
+            'Amazon Tests': {
+              echo '🛒 Running Amazon tests (JUnit + HTML)...'
+              sh 'npm run test:amazon:report'
+              echo '✅ Amazon tests complete'
+            },
+            'Smoke Tests': {
+              echo '🔥 Running Smoke tests (JUnit + HTML)...'
+              sh 'npm run test:smoke:report'
+              echo '✅ Smoke tests complete'
+            },
+            'Target Tests': {
+              echo '🎯 Running Target tests (JUnit + HTML)...'
+              sh 'npm run test:target:report'
+              echo '✅ Target tests complete'
+            },
+            'Walmart Tests': {
+              echo '🏪 Running Walmart tests (JUnit + HTML)...'
+              sh 'npm run test:walmart:report'
+              echo '✅ Walmart tests complete'
+            },
+            'Best Buy Tests': {
+              echo '💙 Running Best Buy tests (JUnit + HTML)...'
+              sh 'npm run test:bestbuy:report'
+              echo '✅ Best Buy tests complete'
+            },
+            'eBay Tests': {
+              echo '📦 Running eBay tests (JUnit + HTML)...'
+              sh 'npm run test:ebay:report'
+              echo '✅ eBay tests complete'
+            }
+          )
+        }der(logRotator(numToKeepStr: '10'))
     quietPeriod(0)
     skipDefaultCheckout(false)
   }
