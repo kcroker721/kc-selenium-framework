@@ -57,18 +57,25 @@ describe('Amazon - Add to Cart Workflow', function () {
   it('should open product detail page', async () => {
     console.log("[TEST] Opening first product");
     
-    // Wait for search results to be fully loaded
+    // Wait for search results container
     await kc.KCWait({ 
       locator: 'css', 
-      value: 'div[data-component-type="s-search-result"] h2 a',
+      value: 'div.s-main-slot',
       timeout: 15000
     });
     
-    const firstProduct = await kc.KCFindVisible(
-      By.css('div[data-component-type="s-search-result"] h2 a')
-    );
+    // Additional wait for results to render
+    await kc.driver.sleep(2000);
     
-    await firstProduct.click();
+    // Find first product link
+    const productLinks = await kc.driver.findElements(By.css('h2 a.a-link-normal'));
+    console.log(`[TEST] Found ${productLinks.length} product links`);
+    
+    if (productLinks.length === 0) {
+      throw new Error('No product links found');
+    }
+    
+    await productLinks[0].click();
     
     await kc.KCWait({ 
       locator: 'id', 

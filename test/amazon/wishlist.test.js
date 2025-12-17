@@ -50,18 +50,25 @@ describe('Amazon - Wishlist / Save for Later', function () {
     // Wait for results to load
     await kc.driver.sleep(3000);
     
-    // Wait for product links
+    // Wait for search results container
     await kc.KCWait({ 
       locator: 'css', 
-      value: 'div[data-component-type="s-search-result"] h2 a', 
+      value: 'div.s-main-slot', 
       timeout: 15000 
     });
     
-    const firstProduct = await kc.KCFindVisible(
-      By.css('div[data-component-type="s-search-result"] h2 a')
-    );
+    // Additional wait for product links to render
+    await kc.driver.sleep(2000);
     
-    await firstProduct.click();
+    // Find first product link
+    const productLinks = await kc.driver.findElements(By.css('h2 a.a-link-normal'));
+    console.log(`[TEST] Found ${productLinks.length} product links`);
+    
+    if (productLinks.length === 0) {
+      throw new Error('No product links found in search results');
+    }
+    
+    await productLinks[0].click();
     
     await kc.KCWait({ 
       locator: 'id', 
@@ -132,38 +139,36 @@ describe('Amazon - Wishlist / Save for Later', function () {
   });
 
   it('should navigate to cart to test "Save for Later"', async () => {
-    console.log("[TEST] Testing save for later - adding item to cart first");
+    console.log("[TEST] Testing save for later - navigating to cart");
     
     try {
       // Try to add item to cart
-      const addToCartBtn = await kc.driver.findElement(
+      const addToCartBtns = await kc.driver.findElements(
         By.css('#add-to-cart-button, input[name="submit.add-to-cart"]')
       );
       
-      await addToCartBtn.click();
-      await kc.driver.sleep(2000);
-      
-      // Navigate to cart
-      await kc.KCClick({ locator: 'id', value: 'nav-cart' });
-      await kc.driver.sleep(2000);
-      
-      const currentUrl = await kc.driver.getCurrentUrl();
-      console.log(`[TEST] Navigated to: ${currentUrl}`);
-      
-      const isCartPage = currentUrl.includes('/cart') || currentUrl.includes('/gp/cart');
-      expect(isCartPage).to.be.true;
+      if (addToCartBtns.length > 0) {
+        await addToCartBtns[0].click();
+        await kc.driver.sleep(2000);
+      }
       
     } catch (error) {
       console.log("[TEST] Could not add to cart - may require variations");
-      
-      // Still verify cart navigation works
-      await kc.KCClick({ locator: 'id', value: 'nav-cart' });
-      await kc.driver.sleep(2000);
-      
-      const currentUrl = await kc.driver.getCurrentUrl();
-      const isCartPage = currentUrl.includes('/cart') || currentUrl.includes('/gp/cart');
-      expect(isCartPage).to.be.true;
     }
+    
+    // Navigate to cart using JavaScript click to avoid overlay issues
+    const cartButton = await kc.driver.findElement(By.id('nav-cart'));
+    await kc.driver.executeScript('arguments[0].scrollIntoView({block: "center"});', cartButton);
+    await kc.driver.sleep(500);
+    await kc.driver.executeScript('arguments[0].click();', cartButton);
+    
+    await kc.driver.sleep(2000);
+    
+    const currentUrl = await kc.driver.getCurrentUrl();
+    console.log(`[TEST] Navigated to: ${currentUrl}`);
+    
+    const isCartPage = currentUrl.includes('/cart') || currentUrl.includes('/gp/cart');
+    expect(isCartPage).to.be.true;
   });
 
   it('should show "Save for Later" option in cart', async () => {
@@ -178,9 +183,9 @@ describe('Amazon - Wishlist / Save for Later', function () {
     if (saveForLaterButtons.length > 0) {
       expect(saveForLaterButtons.length).to.be.greaterThan(0);
     } else {
-      // Cart might be empty, check for empty cart message
+      // Cart might be empty, check for empty cart message using XPath
       const emptyCartMsg = await kc.driver.findElements(
-        By.css('.sc-your-amazon-cart-is-empty, h2:contains("Your Amazon Cart is empty")')
+        By.xpath('//h2[contains(text(), "Your Amazon Cart is empty")] | //*[contains(@class, "sc-your-amazon-cart-is-empty")]')
       );
       console.log(`[TEST] Empty cart indicators: ${emptyCartMsg.length}`);
       expect(emptyCartMsg.length).to.be.at.least(0);

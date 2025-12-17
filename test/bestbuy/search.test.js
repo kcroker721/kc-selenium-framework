@@ -11,15 +11,32 @@ const BESTBUY_URL = "https://www.bestbuy.com";
 const SEARCH_TERM = "laptop";
 
 describe('Best Buy - Product Search', function () {
-  this.timeout(90000);
+  this.timeout(120000); // Increase to 2 minutes
 
   let kc;
 
   before(async () => {
     console.log("[TEST] Starting Best Buy search test");
     kc = await KCDriver.build({ headed: false });
-    await kc.KCGoTo(BESTBUY_URL);
-    await kc.driver.sleep(3000);
+    
+    try {
+      await kc.KCGoTo(BESTBUY_URL);
+      console.log("[TEST] Page loaded, waiting for content...");
+      
+      // Wait longer for Best Buy's security/bot detection
+      await kc.driver.sleep(5000);
+      
+      // Wait for page to be interactive
+      await kc.driver.wait(async () => {
+        const readyState = await kc.driver.executeScript('return document.readyState');
+        return readyState === 'complete';
+      }, 30000);
+      
+      console.log("[TEST] Page is ready");
+    } catch (error) {
+      console.log(`[TEST] Error loading page: ${error.message}`);
+      throw error;
+    }
   });
 
   after(async () => {
