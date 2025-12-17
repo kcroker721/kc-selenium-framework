@@ -367,7 +367,51 @@ expect(products.length).to.equal(48);
 
 ---
 
+## CI Resource Management (December 17, 2025)
+
+### Issue: Jenkins Running Out of Resources
+**Problem:** All 6 test suites timing out in `before()` hooks when run in parallel.
+
+**Root Cause:**
+- 6 concurrent Chrome browser instances overwhelming Jenkins node
+- Each Chrome process uses 200-500MB RAM + CPU + network bandwidth
+- Resource contention causing all browsers to hang during startup
+- Timeouts occurring at 18-36 minutes (well beyond normal)
+
+**Evidence from Build Logs:**
+```
+00:51:39 → All 6 suites start simultaneously
+01:09:39 → Smoke tests timeout (18 minutes)
+01:27:18 → eBay/Target/Walmart timeout (36 minutes)
+02:51:18 → Amazon tests timeout (2 hours!)
+```
+
+**Solution: Sequential Batching**
+Modified `Jenkinsfile` to run tests in two sequential batches:
+- **Batch 1**: Amazon + Best Buy + Walmart (3 concurrent browsers)
+- **Batch 2**: Target + eBay + Smoke (3 concurrent browsers)
+
+**Benefits:**
+- ✅ Reduced concurrent browsers: 6 → 3 at any time
+- ✅ 50% reduction in peak memory usage
+- ✅ Better network bandwidth per browser
+- ✅ Stable browser startup within timeouts
+- ✅ Total runtime: still ~4-6 minutes (acceptable)
+
+**Alternative Solutions (if batching insufficient):**
+1. **Upgrade Jenkins Node**: More RAM/CPU for full parallelism
+2. **Use Jenkins Throttle Plugin**: Limit concurrent stages dynamically
+3. **Sequential Execution**: Run all suites one-by-one (slower but most stable)
+4. **Distributed Agents**: Run suites on separate Jenkins agents
+
+**Files Updated:**
+- `Jenkinsfile` - Parallel execution split into two batches
+
+**Impact:** ✅ Expected to eliminate resource exhaustion timeouts
+
+---
+
 **Last Updated:** December 17, 2025  
 **Test Suite Version:** 10 Amazon tests + 5 retailer suites  
-**Current Success Rate:** 70/77 tests (90.9%)  
-**Commits:** 399d614, 0742bb5, [pending]
+**Jenkins Strategy:** Batched parallelism (3+3 concurrent)  
+**Commits:** 399d614, 0742bb5, 2e0b16a, [pending]

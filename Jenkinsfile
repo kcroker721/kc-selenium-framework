@@ -53,26 +53,32 @@ pipeline {
         sh 'mkdir -p reports reports/screenshots'
         
         script {
+          // Run suites in two sequential batches to reduce parallel browser processes
+          // Batch 1: heavier suites (limit concurrency)
           parallel(
             'Amazon Tests': {
               echo '🛒 Running Amazon tests (10 files, 52+ tests)...'
               sh 'npm run test:amazon:report'
               echo '✅ Amazon tests complete'
             },
-            'Target Tests': {
-              echo '🎯 Running Target tests...'
-              sh 'npm run test:target:report'
-              echo '✅ Target tests complete'
+            'Best Buy Tests': {
+              echo '💙 Running Best Buy tests...'
+              sh 'npm run test:bestbuy:report'
+              echo '✅ Best Buy tests complete'
             },
             'Walmart Tests': {
               echo '🏪 Running Walmart tests...'
               sh 'npm run test:walmart:report'
               echo '✅ Walmart tests complete'
-            },
-            'Best Buy Tests': {
-              echo '💙 Running Best Buy tests...'
-              sh 'npm run test:bestbuy:report'
-              echo '✅ Best Buy tests complete'
+            }
+          )
+
+          // Batch 2: lighter suites
+          parallel(
+            'Target Tests': {
+              echo '🎯 Running Target tests...'
+              sh 'npm run test:target:report'
+              echo '✅ Target tests complete'
             },
             'eBay Tests': {
               echo '📦 Running eBay tests...'

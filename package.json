@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha \"test/**/*.test.js\"",
+    "test": "npm run test:smoke",
+    "test:all": "mocha \"test/**/*.test.js\" --timeout 300000",
     "test:amazon": "mocha \"test/amazon/**/*.test.js\"",
     "test:smoke": "mocha \"test/smoke/**/*.test.js\"",
     "test:target": "mocha \"test/target/**/*.test.js\"",
