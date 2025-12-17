@@ -64,20 +64,35 @@ describe('Amazon - Add to Cart Workflow', function () {
       timeout: 15000
     });
     
-    // Additional wait for results to render
-    await kc.driver.sleep(3000);
+    // Extended wait for results to render in CI environments
+    await kc.driver.sleep(5000);
     
-    // Try multiple selectors to find product links
+    // Try comprehensive list of selectors to find product links
     let productLinks = await kc.driver.findElements(By.css('h2 a.a-link-normal'));
     
     if (productLinks.length === 0) {
-      // Try alternative selector
       productLinks = await kc.driver.findElements(By.css('div.s-result-item h2 a'));
     }
     
     if (productLinks.length === 0) {
-      // Try even more generic
       productLinks = await kc.driver.findElements(By.css('.s-main-slot h2 a'));
+    }
+    
+    if (productLinks.length === 0) {
+      productLinks = await kc.driver.findElements(By.css('div[data-component-type="s-search-result"] a.a-link-normal'));
+    }
+    
+    if (productLinks.length === 0) {
+      productLinks = await kc.driver.findElements(By.css('span.a-size-medium.a-color-base.a-text-normal'));
+      if (productLinks.length > 0) {
+        // These are title spans, need to find parent link
+        productLinks = await kc.driver.findElements(By.css('a.a-link-normal.s-no-outline'));
+      }
+    }
+    
+    if (productLinks.length === 0) {
+      // Last resort: any link in search results
+      productLinks = await kc.driver.findElements(By.css('[data-component-type="s-search-result"] a[href*="/dp/"]'));
     }
     
     console.log(`[TEST] Found ${productLinks.length} product links`);
