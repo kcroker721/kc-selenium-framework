@@ -49,10 +49,19 @@ describe('Amazon - Customer Reviews', function () {
     });
     
     // Additional wait for product links to render
-    await kc.driver.sleep(2000);
+    await kc.driver.sleep(3000);
 
-    // Find first product link
-    const productLinks = await kc.driver.findElements(By.css('h2 a.a-link-normal'));
+    // Try multiple selectors to find product links
+    let productLinks = await kc.driver.findElements(By.css('h2 a.a-link-normal'));
+    
+    if (productLinks.length === 0) {
+      productLinks = await kc.driver.findElements(By.css('div.s-result-item h2 a'));
+    }
+    
+    if (productLinks.length === 0) {
+      productLinks = await kc.driver.findElements(By.css('.s-main-slot h2 a'));
+    }
+    
     console.log(`[TEST] Found ${productLinks.length} product links`);
     
     if (productLinks.length === 0) {
