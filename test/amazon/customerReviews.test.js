@@ -203,9 +203,17 @@ describe('Amazon - Customer Reviews', function () {
   it('should have link to see all reviews', async () => {
     console.log("[TEST] Checking for 'See all reviews' link");
     
-    const seeAllLink = await kc.driver.findElements(
-      By.css('[data-hook="see-all-reviews-link-foot"], a[href*="customerReviews"], a:contains("See all reviews")')
+    // Try CSS selectors first
+    let seeAllLink = await kc.driver.findElements(
+      By.css('[data-hook="see-all-reviews-link-foot"], a[href*="customerReviews"]')
     );
+    
+    // Fallback to XPath for text matching (CSS :contains() is invalid)
+    if (seeAllLink.length === 0) {
+      seeAllLink = await kc.driver.findElements(
+        By.xpath('//a[contains(text(), "See all reviews") or contains(text(), "See all") or contains(text(), "customer reviews")]')
+      );
+    }
     
     console.log(`[TEST] Found ${seeAllLink.length} 'See all reviews' links`);
     expect(seeAllLink.length).to.be.greaterThan(0);
